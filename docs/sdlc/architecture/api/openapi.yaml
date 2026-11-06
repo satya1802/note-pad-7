@@ -2,6 +2,27 @@
 openapi: 3.1.0
 info:
   title: note pad 7
-  version: architecture-v0
+  version: architecture-v1
   description: Designed API from the approved architecture (not extracted from code).
 paths: {}
+components:
+  schemas:
+    note:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - created_at
+      - updated_at
