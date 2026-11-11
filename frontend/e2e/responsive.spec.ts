@@ -78,9 +78,7 @@ test.describe("responsive desktop (1280x800)", () => {
     await page.waitForTimeout(1200);
 
     await expect(page.locator("#note-title")).toHaveValue("Desktop editor check");
-    await expect(page.locator("#note-body")).toHaveValue(
-      "Body text typed at the desktop viewport",
-    );
+    await expect(page.locator("#note-body")).toHaveValue("Body text typed at the desktop viewport");
     await expectNoHorizontalOverflow(page);
   });
 });
