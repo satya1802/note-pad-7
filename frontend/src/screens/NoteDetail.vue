@@ -373,12 +373,13 @@ onUnmounted(() => {
 
                 <Button
                   id="delete-note-btn"
-                  class="order-3 inline-flex items-center justify-center gap-2 px-4 py-2 text-[12px] uppercase tracking-[0.18em] rounded-none transition-colors duration-200 motion-reduce:transition-none hover:opacity-70 focus:outline focus:outline-2 focus:outline-offset-2"
+                  class="order-3 inline-flex min-h-[44px] items-center justify-center gap-2 px-4 py-2 text-[12px] uppercase tracking-[0.18em] rounded-none transition-colors duration-200 motion-reduce:transition-none hover:opacity-70 focus:outline focus:outline-2 focus:outline-offset-2"
                   :style="{
                     backgroundColor: 'transparent',
                     color: brand.primaryColor,
                     border: '1px solid ' + brand.primaryColor,
                     outlineColor: brand.primaryColor,
+                    minHeight: '44px',
                   }"
                   @click="askDelete"
                 >
@@ -419,26 +420,28 @@ onUnmounted(() => {
             This removes the note from this browser's storage. There is no cloud copy to recover it
             from.
           </p>
-          <div class="mt-6 flex justify-end gap-3">
+          <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <Button
               id="keep-note-btn"
-              class="px-4 py-2 text-[12px] uppercase tracking-[0.18em] rounded-none focus:outline focus:outline-2 focus:outline-offset-2"
+              class="min-h-[44px] w-full px-4 py-2 text-[12px] uppercase tracking-[0.18em] rounded-none focus:outline focus:outline-2 focus:outline-offset-2 sm:w-auto"
               :style="{
                 backgroundColor: 'transparent',
                 color: brand.primaryColor,
                 border: '1px solid ' + brand.accentColor,
                 outlineColor: brand.primaryColor,
+                minHeight: '44px',
               }"
               @click="closeDelete"
             >
               Keep note
             </Button>
             <Button
-              class="px-4 py-2 text-[12px] uppercase tracking-[0.18em] rounded-none focus:outline focus:outline-2 focus:outline-offset-2"
+              class="min-h-[44px] w-full px-4 py-2 text-[12px] uppercase tracking-[0.18em] rounded-none focus:outline focus:outline-2 focus:outline-offset-2 sm:w-auto"
               :style="{
                 backgroundColor: brand.primaryColor,
                 color: brand.accentColor,
                 outlineColor: brand.primaryColor,
+                minHeight: '44px',
               }"
               @click="confirmDelete"
             >
