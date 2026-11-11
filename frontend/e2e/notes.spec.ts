@@ -137,7 +137,8 @@ test.describe("notes", () => {
     await expect(page).toHaveURL(/\/notes\/.+/);
 
     const bodyInput = page.locator("#note-body");
-    const text = "Line one.\nLine two with  double  spaces.\nLine three — em dash, and symbols !@#$%";
+    const text =
+      "Line one.\nLine two with  double  spaces.\nLine three — em dash, and symbols !@#$%";
     await bodyInput.fill(text);
     await page.waitForTimeout(1200);
 
