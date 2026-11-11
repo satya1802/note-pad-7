@@ -3,83 +3,99 @@
 > Maintained by QuorQ AI SDLC. Text between `sdlc:auto` markers is regenerated; anything outside them is yours and is kept.
 
 <!-- sdlc:auto:start narrative -->
+### EPIC-001 · approved · source: plan:EPIC-001
+
+Epic grouping the core note creation and editing stories.
+
+Contains: US-001 Create a new note (3 pts, frontend-agent); US-002 Give a note a title (2 pts, frontend-agent); US-003 Write and edit a plain-text note body (3 pts, frontend-agent); US-004 Auto-save notes while typing (3 pts, frontend-agent). No epic-level points or role were recorded.
+
+**Related:** US-001, US-002, US-003, US-004
+
+### EPIC-002 · approved · source: plan:EPIC-002
+
+Epic grouping note browsing, searching, and management stories.
+
+Contains: US-005 Browse a list of all notes (3 pts, frontend-agent); US-006 Open a note to view and edit (2 pts, frontend-agent); US-007 Search across notes (3 pts, frontend-agent); US-008 Delete a note (2 pts, frontend-agent). No epic-level points or role were recorded.
+
+**Related:** US-005, US-006, US-007, US-008
+
+### EPIC-003 · approved · source: plan:EPIC-003
+
+Epic grouping local browser persistence and privacy stories.
+
+Contains: US-009 Keep notes in the browser between visits (5 pts, frontend-agent); US-010 Notes stay private to this browser with no cross-device sync (1 pt, qa-agent). No epic-level points or role were recorded.
+
+**Related:** US-009, US-010
+
+### EPIC-004 · approved · source: plan:EPIC-004
+
+Epic grouping access, platform, and interface stories.
+
+Contains: US-011 Use the app free with no login or accounts (1 pt, frontend-agent); US-012 Use the app on desktop and mobile browsers responsively (5 pts, frontend-agent); US-013 English-only interface (1 pt, frontend-agent). No epic-level points or role were recorded.
+
+**Related:** US-011, US-012, US-013
+
 ### PLAN-SPRINT-1 · approved · source: plan:Sprint 1
 
-Sprint 1 plan (capacity 20) targets local-storage persistence and core note creation/editing/listing.
+Sprint 1 plan (capacity 20) targets local-storage persistence and core note creation/titling/editing, plus the browsable note list and free/English-only access.
 
-Goal: 'Stand up local-storage persistence and deliver core note creation, titling, body editing, and the browsable note list with free, English-only access.' Capacity: 20 points. Plan version 1, overall plan status approved.
+Goal as stated: 'Stand up local-storage persistence and deliver core note creation, titling, body editing, and the browsable note list with free, English-only access.' Stories whose text matches this goal: US-001 (3 pts), US-002 (2 pts), US-003 (3 pts), US-005 (3 pts), US-009 (5 pts), US-011 (1 pt), US-013 (1 pt) -- summing to 18 of 20 capacity points. No development-run ticket records exist yet for these items in the provided input.
 
-**Related:** US-001, US-002, US-003, US-004, US-005, US-013
+**Related:** US-001, US-002, US-003, US-005, US-009, US-011, US-013
 
 ### PLAN-SPRINT-2 · approved · source: plan:Sprint 2
 
-Sprint 2 plan (capacity 20) targets auto-save, note management, privacy guarantees, and responsive layout.
+Sprint 2 plan (capacity 20) targets completing auto-save, note opening/search/delete, privacy/no-sync behavior, and responsive desktop/mobile layout.
 
-Goal: 'Complete auto-save, note opening/search/delete, privacy/no-sync behavior, and responsive desktop/mobile layout.' Capacity: 20 points. Plan version 1, overall plan status approved.
-
-**Related:** US-004, US-006, US-007, US-008, US-009, US-010, US-012
-
-### DEV-US-001 · approved · source: dev:US-001
-
-Story 'Create a new note' implemented and delivered.
-
-Ticket US-001 (plan: 3 points, role frontend-agent, epic EPIC-001) status=delivered, commit f927ac3373728cfb0965843577b91d972d736378.
-
-**Related:** US-001
-
-### DEV-US-002 · approved · source: dev:US-002
-
-Story 'Give a note a title' implemented and delivered.
-
-Ticket US-002 (plan: 2 points, role frontend-agent, epic EPIC-001) status=delivered, commit 9ca8a3cecd11ecff49fa25aa92963f54ad6c2948.
-
-**Related:** US-002
-
-### DEV-US-003 · approved · source: dev:US-003
-
-Story 'Write and edit a plain-text note body' implemented and delivered.
-
-Ticket US-003 (plan: 3 points, role frontend-agent, epic EPIC-001) status=delivered, commit 9ca8a3cecd11ecff49fa25aa92963f54ad6c2948 (same commit as US-002, suggesting the two were implemented together).
-
-**Related:** US-003
-
-### DEV-US-005 · approved · source: dev:US-005
-
-Story 'Browse a list of all notes' implemented and delivered.
-
-Ticket US-005 (plan: 3 points, role frontend-agent, epic EPIC-002) status=delivered, commit f927ac3373728cfb0965843577b91d972d736378 (same commit as US-001, suggesting the two were implemented together).
-
-**Related:** US-005
-
-### DEV-US-009 · approved · source: dev:US-009
-
-Story 'Keep notes in the browser between visits' implemented and delivered.
-
-Ticket US-009 (plan: 5 points, role frontend-agent, epic EPIC-003) status=delivered, commit f927ac3373728cfb0965843577b91d972d736378.
-
-**Related:** US-009
-
-### DEV-US-011 · approved · source: dev:US-011
-
-Story 'Use the app free with no login or accounts' implemented and delivered.
-
-Ticket US-011 (plan: 1 point, role frontend-agent, epic EPIC-004) status=delivered, commit f927ac3373728cfb0965843577b91d972d736378.
-
-**Related:** US-011
-
-### DEV-US-013 · approved · source: dev:US-013
-
-Story 'English-only interface' implemented and delivered.
-
-Ticket US-013 (plan: 1 point, role frontend-agent, epic EPIC-004) status=delivered, commit f927ac3373728cfb0965843577b91d972d736378.
-
-**Related:** US-013
-
-### DEV-GAP-001 · draft · source: dev:run-status
-
-Six planned stories have no reported ticket status in this development run.
-
-Plan includes US-004 (Auto-save), US-006 (Open a note to view and edit), US-007 (Search across notes), US-008 (Delete a note), US-010 (Privacy/no cross-device sync), and US-012 (Responsive desktop/mobile layout) with assigned points and roles, but the development run output provided lists no ticket entries or commits for them despite the run status being 'completed'. No status (delivered or otherwise) can be confirmed for these stories from the given input.
+Goal as stated: 'Complete auto-save, note opening/search/delete, privacy/no-sync behavior, and responsive desktop/mobile layout.' Stories whose text matches this goal: US-004 (3 pts), US-006 (2 pts), US-007 (3 pts), US-008 (2 pts), US-010 (1 pt), US-012 (5 pts) -- summing to 16 of 20 capacity points. All six were run as tickets in the development run (see dev:TICKET-US-004/006/007/008/010/012).
 
 **Related:** US-004, US-006, US-007, US-008, US-010, US-012
+
+### DEV-US-004 · approved · source: dev:TICKET-US-004
+
+Auto-save notes while typing -- delivered.
+
+Ticket US-004 'Auto-save notes while typing' status=delivered. Commit: 0f6ba795ca3667c30d57f2a5668aaf6313a29f0f. Planned effort: 3 points, frontend-agent.
+
+**Related:** US-004
+
+### DEV-US-006 · approved · source: dev:TICKET-US-006
+
+Open a note to view and edit -- delivered.
+
+Ticket US-006 'Open a note to view and edit' status=delivered. Commit: 0f6ba795ca3667c30d57f2a5668aaf6313a29f0f. Planned effort: 2 points, frontend-agent.
+
+**Related:** US-006
+
+### DEV-US-007 · draft · source: dev:TICKET-US-007
+
+Search across notes -- delivery failed.
+
+Ticket US-007 'Search across notes' status=failed. No commit was produced. Planned effort: 3 points, frontend-agent. Functionality not confirmed working; no implementation detail available from input.
+
+**Related:** US-007
+
+### DEV-US-008 · approved · source: dev:TICKET-US-008
+
+Delete a note -- delivered.
+
+Ticket US-008 'Delete a note' status=delivered. Commit: 0f6ba795ca3667c30d57f2a5668aaf6313a29f0f. Planned effort: 2 points, frontend-agent.
+
+**Related:** US-008
+
+### DEV-US-010 · approved · source: dev:TICKET-US-010
+
+Notes stay private to this browser with no cross-device sync -- delivered.
+
+Ticket US-010 'Notes stay private to this browser with no cross-device sync' status=delivered. Commit: 0f6ba795ca3667c30d57f2a5668aaf6313a29f0f. Planned effort: 1 point, qa-agent (per plan; ticket itself does not restate role).
+
+**Related:** US-010
+
+### DEV-US-012 · approved · source: dev:TICKET-US-012
+
+Use the app on desktop and mobile browsers responsively -- delivered.
+
+Ticket US-012 'Use the app on desktop and mobile browsers responsively' status=delivered. Commit: a88022af28e7ef94e4dd92c79b008fc29b344625. Planned effort: 5 points, frontend-agent. Note: this ticket's commit hash differs from the other delivered tickets in this run, which all share commit 0f6ba795ca3667c30d57f2a5668aaf6313a29f0f.
+
+**Related:** US-012
 <!-- sdlc:auto:end narrative -->
