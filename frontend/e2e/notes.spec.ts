@@ -88,10 +88,68 @@ test.describe("notes", () => {
     await expect(page.getByText("Untitled", { exact: false })).toBeVisible();
   });
 
+  test("[AC-003] a title typed in the editor appears as the note's label in the list after navigating back", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: /write the first one/i }).click();
+    await expect(page).toHaveURL(/\/notes\/.+/);
+    await page.locator("#note-title").fill("Grocery List");
+    await page.waitForTimeout(1200);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/\/notes$/);
+    await expect(page.getByText("Grocery List", { exact: false })).toBeVisible();
+  });
+
+  test("[AC-006] pasting HTML/rich content into the body stores and renders plain text only, with no markup", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: /write the first one/i }).click();
+    await expect(page).toHaveURL(/\/notes\/.+/);
+
+    const bodyInput = page.locator("#note-body");
+    await bodyInput.click();
+    await page.evaluate(() => {
+      const el = document.getElementById("note-body") as HTMLTextAreaElement;
+      const dt = new DataTransfer();
+      dt.setData("text/plain", "Bold heading item");
+      dt.setData("text/html", "<h1><b>Bold heading</b></h1><ul><li>item</li></ul>");
+      const pasteEvent = new ClipboardEvent("paste", {
+        bubbles: true,
+        cancelable: true,
+        clipboardData: dt,
+      });
+      el.dispatchEvent(pasteEvent);
+    });
+    await page.waitForTimeout(1200);
+
+    await expect(bodyInput).toHaveValue("Bold heading item");
+    const bodyHtml = await bodyInput.innerHTML().catch(() => "");
+    expect(bodyHtml).not.toContain("<h1>");
+    expect(bodyHtml).not.toContain("<b>");
+
+    await page.reload();
+    await expect(bodyInput).toHaveValue("Bold heading item");
+  });
+
+  test("[AC-005] body content survives a page reload exactly as typed", async ({ page }) => {
+    await page.getByRole("button", { name: /write the first one/i }).click();
+    await expect(page).toHaveURL(/\/notes\/.+/);
+
+    const bodyInput = page.locator("#note-body");
+    const text = "Line one.\nLine two with  double  spaces.\nLine three — em dash, and symbols !@#$%";
+    await bodyInput.fill(text);
+    await page.waitForTimeout(1200);
+
+    await page.reload();
+    await expect(bodyInput).toHaveValue(text);
+  });
+
   test("[AC-023][AC-024] no login, sign-up or payment prompt appears at any point in the create-and-use flow", async ({
     page,
   }) => {
-    const forbidden = /log\s*in|sign\s*in|sign\s*up|register|subscribe|upgrade|payment|billing|credit card/i;
+    const forbidden =
+      /log\s*in|sign\s*in|sign\s*up|register|subscribe|upgrade|payment|billing|credit card/i;
     await expect(page.locator("body")).not.toContainText(forbidden);
 
     await page.getByRole("button", { name: /write the first one/i }).click();
@@ -127,7 +185,8 @@ test.describe("notes", () => {
       const url = new URL(req.url());
       const isAppOrigin = url.origin === new URL(page.url()).origin;
       const looksLikeDataApi =
-        /\/api\//.test(url.pathname) || /\/notes(\/|$)/.test(url.pathname) && req.method() !== "GET";
+        /\/api\//.test(url.pathname) ||
+        (/\/notes(\/|$)/.test(url.pathname) && req.method() !== "GET");
       if (looksLikeDataApi && isAppOrigin) {
         apiCalls.push(req.url());
       }
