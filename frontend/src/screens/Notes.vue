@@ -74,17 +74,20 @@ function formatDate(iso) {
   return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+function isLit(note) {
+  return focusedId.value === note.id || hoveredId.value === note.id;
+}
+
 function cardStyle(note) {
-  const lit = focusedId.value === note.id || hoveredId.value === note.id;
   return {
     ...frame,
-    boxShadow: lit ? `inset 0 0 0 1px ${brand.accentColor}` : "none",
+    boxShadow: isLit(note) ? `inset 0 0 0 1px ${brand.accentColor}` : "none",
     transition: reduceMotion.value ? "none" : "box-shadow 160ms ease-out",
   };
 }
 
 function medallionStyle(note) {
-  const lit = focusedId.value === note.id || hoveredId.value === note.id;
+  const lit = isLit(note);
   return {
     border: `1px solid ${brand.accentColor}`,
     fontFamily: brand.fontHeading,
@@ -93,6 +96,18 @@ function medallionStyle(note) {
     transition: reduceMotion.value
       ? "none"
       : "background-color 160ms ease-out, color 160ms ease-out",
+  };
+}
+
+function ctaStyle(key) {
+  return {
+    backgroundColor: brand.primaryColor,
+    color: brand.accentColor,
+    border: `1px solid ${brand.accentColor}`,
+    borderRadius: brand.radius,
+    fontFamily: brand.fontHeading,
+    outline: focusedId.value === key ? `1px solid ${brand.primaryColor}` : "none",
+    outlineOffset: 3,
   };
 }
 
@@ -147,15 +162,7 @@ function clearSearch() {
       <button
         type="button"
         class="h-11 shrink-0 px-6 text-[10px] uppercase tracking-[0.3em] focus:outline-none"
-        :style="{
-          backgroundColor: brand.primaryColor,
-          color: brand.accentColor,
-          border: `1px solid ${brand.accentColor}`,
-          borderRadius: brand.radius,
-          fontFamily: brand.fontHeading,
-          outline: focusedId === 'new' ? `1px solid ${brand.primaryColor}` : 'none',
-          outlineOffset: 3,
-        }"
+        :style="ctaStyle('new')"
         @focus="focusedId = 'new'"
         @blur="focusedId = null"
         @click="createNote"
@@ -236,15 +243,7 @@ function clearSearch() {
       <button
         type="button"
         class="mt-6 h-11 px-6 text-[10px] uppercase tracking-[0.3em] focus:outline-none"
-        :style="{
-          backgroundColor: brand.primaryColor,
-          color: brand.accentColor,
-          border: `1px solid ${brand.accentColor}`,
-          borderRadius: brand.radius,
-          fontFamily: brand.fontHeading,
-          outline: focusedId === 'clear' ? `1px solid ${brand.primaryColor}` : 'none',
-          outlineOffset: 3,
-        }"
+        :style="ctaStyle('clear')"
         @focus="focusedId = 'clear'"
         @blur="focusedId = null"
         @click="clearSearch"
@@ -274,21 +273,13 @@ function clearSearch() {
         class="mt-3 text-[10px] uppercase tracking-[0.25em]"
         :style="{ color: brand.neutralColor }"
       >
-        There are no notes yet — begin one and it saves itself as you type, no account, no button
-        to press
+        There are no notes yet — begin one and it saves itself as you type, no account, no button to
+        press
       </p>
       <button
         type="button"
         class="mt-6 h-11 px-6 text-[10px] uppercase tracking-[0.3em] focus:outline-none"
-        :style="{
-          backgroundColor: brand.primaryColor,
-          color: brand.accentColor,
-          border: `1px solid ${brand.accentColor}`,
-          borderRadius: brand.radius,
-          fontFamily: brand.fontHeading,
-          outline: focusedId === 'first' ? `1px solid ${brand.primaryColor}` : 'none',
-          outlineOffset: 3,
-        }"
+        :style="ctaStyle('first')"
         @focus="focusedId = 'first'"
         @blur="focusedId = null"
         @click="createNote"
