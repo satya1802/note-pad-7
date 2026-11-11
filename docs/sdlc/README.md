@@ -5,7 +5,7 @@
 <!-- sdlc:auto:start overview -->
 simple note pad
 
-**Documentation version:** v6
+**Documentation version:** v7
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -14,9 +14,9 @@ simple note pad
 | Document | State |
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
-| [Architecture](architecture/README.md) | 12 entries |
-| [Development](development/README.md) | 9 entries |
-| [Testing](testing/README.md) | 0 entries |
+| [Architecture](architecture/README.md) | 5 entries |
+| [Development](development/README.md) | 8 entries |
+| [Testing](testing/README.md) | 5 entries |
 | [Deployment](deployment/README.md) | 0 entries |
 | [Maintenance](maintenance/README.md) | 0 entries |
 | [Data model](architecture/data-model.md) | generated |
@@ -31,5 +31,5 @@ simple note pad
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 13 requirements |
-| [Changelog](CHANGELOG.md) | 6 versions |
+| [Changelog](CHANGELOG.md) | 7 versions |
 <!-- sdlc:auto:end contents -->

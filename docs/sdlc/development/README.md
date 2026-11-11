@@ -3,75 +3,67 @@
 > Maintained by QuorQ AI SDLC. Text between `sdlc:auto` markers is regenerated; anything outside them is yours and is kept.
 
 <!-- sdlc:auto:start narrative -->
-### PLAN-DEV-V1 · approved · source: plan:PLAN
+### SPRINT-1 · approved · source: plan:SPRINT-1
 
-Development plan version 1 was approved, organizing all 13 user stories under 4 epics (Note Creation and Editing; Browsing, Searching, and Managing Notes; Local Browser Persistence and Privacy; Access, Platform, and Interface) across two sprints.
+Sprint 1 plan (approved v1, capacity 20): stand up local-storage persistence and core note creation, titling, body editing, and the browsable list with free English-only access.
 
-Plan status: approved, version 1. Epics: EPIC-001 Note Creation and Editing (US-001 Create a new note, 3pts, frontend-agent; US-002 Give a note a title, 2pts, frontend-agent; US-003 Write and edit a plain-text note body, 3pts, frontend-agent; US-004 Auto-save notes while typing, 3pts, frontend-agent). EPIC-002 Browsing, Searching, and Managing Notes (US-005 Browse a list of all notes, 3pts, frontend-agent; US-006 Open a note to view and edit, 2pts, frontend-agent; US-007 Search across notes, 3pts, frontend-agent; US-008 Delete a note, 2pts, frontend-agent). EPIC-003 Local Browser Persistence and Privacy (US-009 Keep notes in the browser between visits, 5pts, frontend-agent; US-010 Notes stay private to this browser with no cross-device sync, 1pt, qa-agent). EPIC-004 Access, Platform, and Interface (US-011 Use the app free with no login or accounts, 1pt, frontend-agent; US-012 Use the app on desktop and mobile browsers responsively, 5pts, frontend-agent; US-013 English-only interface, 1pt, frontend-agent).
+Planned items: EPIC-001 (epic, unassigned), US-001 Create a new note (3 pts, frontend-agent), US-002 Give a note a title (2 pts, frontend-agent), US-003 Write/edit plain-text body (3 pts, frontend-agent), US-004 Auto-save while typing (3 pts, frontend-agent).
 
-**Related:** US-001, US-002, US-003, US-004, US-005, US-006, US-007, US-008, US-009, US-010, US-011, US-012, US-013
+**Related:** EPIC-001, US-001, US-002, US-003, US-004
 
-### SPRINT-1 · approved · source: plan:Sprint 1
+### SPRINT-2 · approved · source: plan:SPRINT-2
 
-Sprint 1 targeted local-storage persistence and the core note creation, titling, body-editing, and browsable list features, with a capacity of 20 points.
+Sprint 2 plan (approved v1, capacity 20): complete auto-save, note opening/search/delete, privacy/no-sync behavior, and responsive desktop/mobile layout.
 
-Goal: Stand up local-storage persistence and deliver core note creation, titling, body editing, and the browsable note list with free, English-only access. Capacity: 20 points.
+Planned items: EPIC-002, EPIC-003, EPIC-004 (epics, unassigned); US-005 Browse list (3 pts, frontend-agent), US-006 Open note (2 pts, frontend-agent), US-007 Search (3 pts, frontend-agent), US-008 Delete (2 pts, frontend-agent), US-009 Persist between visits (5 pts, frontend-agent), US-010 Privacy/no-sync (1 pt, qa-agent), US-011 Free/no login (1 pt, frontend-agent), US-012 Responsive layout (5 pts, frontend-agent), US-013 English-only (1 pt, frontend-agent).
 
-**Related:** US-001, US-002, US-003, US-004
-
-### SPRINT-2 · approved · source: plan:Sprint 2
-
-Sprint 2 targeted auto-save completion, note opening/search/delete, privacy/no-sync behavior, and responsive desktop/mobile layout, with a capacity of 20 points.
-
-Goal: Complete auto-save, note opening/search/delete, privacy/no-sync behavior, and responsive desktop/mobile layout. Capacity: 20 points.
-
-**Related:** US-004, US-006, US-007, US-008, US-009, US-010, US-012
+**Related:** EPIC-002, EPIC-003, EPIC-004, US-005, US-006, US-007, US-008, US-009, US-010, US-011, US-012, US-013
 
 ### DEV-US-004 · approved · source: dev:US-004
 
-Auto-save notes while typing was delivered during the development run.
+Auto-save notes while typing -- delivered.
 
-Ticket US-004 'Auto-save notes while typing': status=delivered, commit=278c63db1dd3425256cd8966e7c5001095365e91.
+Ticket US-004 delivered, commit 278c63db1dd3425256cd8966e7c5001095365e91.
 
 **Related:** US-004
 
 ### DEV-US-006 · approved · source: dev:US-006
 
-Open a note to view and edit was delivered during the development run.
+Open a note to view and edit -- delivered.
 
-Ticket US-006 'Open a note to view and edit': status=delivered, commit=278c63db1dd3425256cd8966e7c5001095365e91.
+Ticket US-006 delivered, commit 278c63db1dd3425256cd8966e7c5001095365e91.
 
 **Related:** US-006
 
 ### DEV-US-007 · approved · source: dev:US-007
 
-Search across notes was delivered during the development run.
+Search across notes -- delivered.
 
-Ticket US-007 'Search across notes': status=delivered, commit=278c63db1dd3425256cd8966e7c5001095365e91.
+Ticket US-007 delivered, commit 278c63db1dd3425256cd8966e7c5001095365e91.
 
 **Related:** US-007
 
 ### DEV-US-008 · approved · source: dev:US-008
 
-Delete a note was delivered during the development run.
+Delete a note -- delivered.
 
-Ticket US-008 'Delete a note': status=delivered, commit=278c63db1dd3425256cd8966e7c5001095365e91.
+Ticket US-008 delivered, commit 278c63db1dd3425256cd8966e7c5001095365e91.
 
 **Related:** US-008
 
 ### DEV-US-010 · draft · source: dev:US-010
 
-Notes stay private to this browser with no cross-device sync failed in the development run; no commit was produced.
+Notes stay private to this browser with no cross-device sync -- delivery failed, no commit produced.
 
-Ticket US-010 'Notes stay private to this browser with no cross-device sync': status=failed, commit=(none).
+Ticket US-010 status=failed, commit=(none). Note: downstream testing input later reports AC-021/AC-022/NFR-001 as fully covered by frontend/e2e/privacy.spec.ts -- this conflicts with the ticket's failed status and is recorded here rather than reconciled.
 
 **Related:** US-010
 
 ### DEV-US-012 · draft · source: dev:US-012
 
-Responsive desktop/mobile browser support failed in the development run; no commit was produced.
+Use the app on desktop and mobile browsers responsively -- delivery failed, no commit produced.
 
-Ticket US-012 'Use the app on desktop and mobile browsers responsively': status=failed, commit=(none).
+Ticket US-012 status=failed, commit=(none). Note: downstream testing input later describes extending frontend/e2e/responsive.spec.ts and calls the existing US-012 suite 'already strong' -- this conflicts with the ticket's failed status and is recorded here rather than reconciled.
 
 **Related:** US-012
 <!-- sdlc:auto:end narrative -->

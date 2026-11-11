@@ -5,89 +5,62 @@
 <!-- sdlc:auto:start narrative -->
 ## Summary
 
-### REQ-STACK · approved · source: requirements:v1
-
-Product owner approved technology stack and scope boundaries for this lightweight delivery.
-
-Approved stack (design against exactly these, no substitution): Backend Spring Boot 4.1, Cloud AWS (S3 + CloudFront for static file delivery, chosen for near-zero cost since the app is fully client-side), Database PostgreSQL 16 (named to satisfy the stack but holds no data -- each browser's local storage is the real store), Frontend Vue 3. Out of scope: cross-device sync/cloud backup of notes; rich text formatting (bold, headings, lists, checkboxes).
-
 ### EPIC-001 · approved · source: requirements:EPIC-001
 
-Note Creation and Editing: visitors can create multiple separate notes, title them, write/edit plain-text bodies, with auto-save as they type. Rich formatting is explicitly excluded.
+Visitors can create multiple separate notes, title them, edit plain-text bodies, and have changes auto-save as they type. Rich formatting is explicitly excluded.
 
-US-001 (critical): Creating a new note produces an empty, separately-stored note with editable title and body, opened ready for editing (AC-001, AC-002). US-002 (high): Typing a title saves and labels the note in the list; an empty title still saves the note but shows a placeholder like 'Untitled' (AC-003, AC-004). US-003 (critical): Body text edits are reflected exactly as plain text; any pasted/applied rich formatting is stripped, retaining only plain text (AC-005, AC-006). US-004 (critical): Title/body changes auto-save as the user types with no manual save button; reopening the note shows the latest changes; the editor UI reflects that saving is automatic (AC-007, AC-008, AC-009).
+- US-001 (critical): Create a new, separate note; opens empty and editable, stored independently without overwriting existing notes (AC-001, AC-002).
+- US-002 (high): Title a note; title saves and labels the note in the list; empty title still saves with an "Untitled" placeholder (AC-003, AC-004).
+- US-003 (critical): Write/edit plain-text body; edits reflected exactly as typed; any pasted/applied rich formatting (bold, headings, lists, checkboxes) is stripped to plain text (AC-005, AC-006).
+- US-004 (critical): Auto-save while typing, no manual save button; reopening the note in the same browser shows the latest changes; UI reflects automatic saving (AC-007, AC-008, AC-009).
 
 **Related:** US-001, US-002, US-003, US-004, AC-001, AC-002, AC-003, AC-004, AC-005, AC-006, AC-007, AC-008, AC-009
 
 ### EPIC-002 · approved · source: requirements:EPIC-002
 
-Browsing, Searching, and Managing Notes: a browsable list of all notes, opening a note to view/edit, searching across notes, and deleting a note with confirmation.
+Visitors can browse a list of all notes, open any note to view/edit it, search across notes, and delete notes with confirmation.
 
-US-005 (critical): The list shows every saved note by title/placeholder; with no notes, an empty state explains there are none yet and how to create one (AC-010, AC-011). US-006 (critical): Selecting a note from the list opens its full title and body for viewing/editing; switching notes always shows the correct content (AC-012, AC-013). US-007 (high): A search term filters the list to notes whose title or body contains it; no matches show an empty/no-results state; clearing the search restores the full list (AC-014, AC-015, AC-016). US-008 (high): Deleting a note requires confirmation -- confirming permanently removes it from the list and local storage; cancelling leaves it unchanged (AC-017, AC-018).
+- US-005 (critical): Browsable list shows each note by title/placeholder; empty state shown with no notes and guidance to create one (AC-010, AC-011).
+- US-006 (critical): Selecting a note opens it with full title/body for view and edit; switching notes always shows the correct content (AC-012, AC-013).
+- US-007 (high): Search filters the list by title/body match; no-match shows empty/no-results state; clearing search restores full list (AC-014, AC-015, AC-016).
+- US-008 (high): Delete requires confirmation; confirming permanently removes the note from list and local storage; cancelling leaves it unchanged (AC-017, AC-018).
 
 **Related:** US-005, US-006, US-007, US-008, AC-010, AC-011, AC-012, AC-013, AC-014, AC-015, AC-016, AC-017, AC-018
 
 ### EPIC-003 · approved · source: requirements:EPIC-003
 
-Local Browser Persistence and Privacy: notes persist only in the visitor's own browser via local storage, with no server-side database, cross-device sync, or cloud backup.
+Notes persist only in the visitor's own browser between visits via local storage, with no server database, no cross-device sync, and no cloud backup. Clearing browser data erases notes (an accepted risk).
 
-US-009 (critical): Notes and their content remain present after closing/reopening the browser on the same device, with no account or server storage required (AC-019, AC-020 -- assumption: localStorage/IndexedDB, no server-side database). US-010 (high): Notes saved in one browser do not appear in a different browser or device (no cross-device sync/cloud backup, explicitly out of scope); clearing browser data erases the notes (AC-021, AC-022 -- assumption: clearing browser data erases them). Assumption surfaced: no export/import of notes to file in this version.
+- US-009 (critical): Notes and content persist across browser close/reopen on the same device; no account or server storage required (AC-019, AC-020).
+- US-010 (high): Notes stay private to the originating browser -- not visible in another browser/device, since there is no sync or backup; clearing site data erases notes (AC-021, AC-022).
+- NFR-004 (accepted risk): No backup/recovery path exists if browser data is cleared -- deliberate trade-off for this version.
 
-**Related:** US-009, US-010, AC-019, AC-020, AC-021, AC-022, NFR-001, NFR-004
+**Related:** US-009, US-010, NFR-001, NFR-004, AC-019, AC-020, AC-021, AC-022
 
 ### EPIC-004 · approved · source: requirements:EPIC-004
 
-Access, Platform, and Interface: free responsive web app for desktop and mobile with no login/accounts/payments, English-only interface.
+The app is free with no login/accounts/payments, works responsively on desktop and mobile browsers, and presents an English-only interface with no localization.
 
-US-011 (critical): New visitors can immediately create/use notes with no login, account creation, or sign-up; the app never asks for payment or subscription (AC-023, AC-024 -- assumption: no payments/billing/subscription). US-012 (high): Desktop layout suits larger screens; mobile layout adapts responsively, keeping create/edit/search/delete usable on both (AC-025, AC-026 -- assumption: responsive web app, not native). US-013 (low): All interface labels/messages are shown in English only, with no language-switching option (AC-027 -- assumption: no localization in this version).
+- US-011 (critical): New visitors can create/use notes immediately with no login, sign-up, or payment at any point (AC-023, AC-024).
+- US-012 (high): Responsive layout -- desktop shows list and editor suited to larger screens; mobile adapts layout and keeps create/edit/search/delete usable (AC-025, AC-026).
+- US-013 (low): Single-language English UI, no language-switching option (AC-027).
+- NFR-002/NFR-003/NFR-006 restate the no-barrier access, cross-platform responsiveness, and English-only scope as accepted non-functional qualities.
 
-**Related:** US-011, US-012, US-013, AC-023, AC-024, AC-025, AC-026, AC-027, NFR-002, NFR-003, NFR-006
+**Related:** US-011, US-012, US-013, NFR-002, NFR-003, NFR-006, AC-023, AC-024, AC-025, AC-026, AC-027
 
 ### NFR-001 · approved · source: requirements:NFR-001
 
-Privacy: notes stored only in the visitor's browser, never sent to or kept on a server.
+Privacy quality requirement: notes must never be sent to or kept on a server.
 
-Each browser holds its own private notes, not visible on any other browser or device. Applies to US-009, US-010.
+Notes are stored only in the visitor's own browser; each browser's notes are private and not visible from any other browser or device. Applies to US-009, US-010.
 
 **Related:** US-009, US-010
 
-### NFR-002 · approved · source: requirements:NFR-002
-
-Usability: instant access with no barriers.
-
-A visitor can open the app and immediately create/use notes with no login, account creation, sign-up, or payment step at any point. Applies to US-011.
-
-**Related:** US-011
-
-### NFR-003 · approved · source: requirements:NFR-003
-
-Compatibility: works responsively on desktop and mobile browsers.
-
-The app works and adapts responsively on both desktop and mobile web browsers, keeping all core actions usable on each, delivered as a web app rather than a native app. Applies to US-012.
-
-**Related:** US-012
-
-### NFR-004 · approved · source: requirements:NFR-004
-
-Availability (accepted risk): no cross-device sync or backup.
-
-Notes are kept only in local browser storage with no cross-device sync and no cloud backup; clearing browser data for the site permanently erases notes. This loss of backup/recovery path is an accepted trade-off for this version. Applies to US-010.
-
-**Related:** US-010
-
 ### NFR-005 · approved · source: requirements:NFR-005
 
-Scalability (accepted risk): no server-side scale concerns.
+Accepted risk: no server-side scalability is designed for since there is no backend data load.
 
-Because all data lives locally in each visitor's browser and there is no backend data load, no concurrent-user or server scaling capacity is designed for in this version. Applies to the whole system.
-
-### NFR-006 · approved · source: requirements:NFR-006
-
-Compliance (accepted risk): English only, no localization.
-
-The interface is provided in a single language, English, with no localization or language-switching option in this version. Applies to US-013.
-
-**Related:** US-013
+Because all data lives locally per-browser with no backend, no concurrent-user or server scaling capacity was designed for in this version. Applies to the whole system.
 <!-- sdlc:auto:end narrative -->
 
 <!-- sdlc:auto:start summary -->

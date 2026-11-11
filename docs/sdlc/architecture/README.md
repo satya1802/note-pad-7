@@ -5,121 +5,52 @@
 <!-- sdlc:auto:start narrative -->
 ## Overview
 
-### ARCH-001 · approved · source: architecture:summary
+### ARCH-001 · approved · source: architecture
 
-_2026-11-06_
+Approved (v1) backend-less architecture: a Vue 3 SPA holding all logic and data client-side, delivered as static files from AWS S3/CloudFront, persisting notes only in browser local storage.
 
-Note Pad 7 is a free, login-free, English-only responsive web notepad with all logic and data living entirely in the visitor's browser.
+Components:
+- spa: Notepad SPA (Vue 3) -- note list, editor, search, create/delete UI, plain-text enforcement, debounced auto-save, responsive layout; all logic in-browser.
+- local_store: Browser Local Storage (localStorage/IndexedDB) -- the real and only data store, holding id/title/body/timestamps per note, private per browser, no sync.
+- cdn: CloudFront CDN -- delivers the static SPA bundle globally over HTTPS at near-zero cost.
+- hosting: AWS S3 -- stores/serves built static SPA files (HTML/JS/CSS/assets).
+- backend: Spring Boot 4.1 (unused this version) -- named to satisfy approved stack; no note data or APIs.
+- database: PostgreSQL 16 (unused this version) -- named to satisfy approved stack; stores no notes.
 
-Approved stack: Vue 3 SPA delivered as static files from AWS S3 behind CloudFront. Per the product owner's deliberate decision, notes persist only in browser local storage (localStorage/IndexedDB) -- no cross-device sync, no cloud backup, no server-side storage. Spring Boot 4.1 and PostgreSQL 16 are named to satisfy the approved stack but hold and serve no note data in this version, since the design is intentionally backend-less. All capabilities (create, title, edit plain text, auto-save, browse, open, search, delete, persistence between visits) are implemented client-side against local storage.
+**Related:** EPIC-001, EPIC-002, EPIC-003, EPIC-004
 
-### ARCH-002 · approved · source: architecture:components:spa
+### ARCH-002 · approved · source: architecture:critical_path
 
-_2026-11-06_
-
-Notepad SPA (Vue 3) is the single-page application containing all application logic and UI.
-
-Component 'spa': Single-page Vue app providing the note list, editor, search, create/delete UI, plain-text enforcement, debounced auto-save, and responsive layout -- all application logic runs entirely in the browser.
-
-### ARCH-003 · approved · source: architecture:components:local_store
-
-_2026-11-06_
-
-Browser Local Storage is the real and only data store for this version.
-
-Component 'local_store' (browser localStorage / IndexedDB): persists each note (id, title, plain-text body, timestamps) in the visitor's own browser between visits. Private per browser, with no sync across devices.
-
-**Related:** ARCH-002
-
-### ARCH-004 · approved · source: architecture:components:cdn
-
-_2026-11-06_
-
-CloudFront CDN delivers the static SPA bundle worldwide.
-
-Component 'cdn' (AWS CloudFront): delivers the static SPA bundle quickly and reliably to desktop and mobile visitors worldwide over HTTPS at near-zero cost.
-
-**Related:** ARCH-005
-
-### ARCH-005 · approved · source: architecture:components:hosting
-
-_2026-11-06_
-
-Static File Hosting stores and serves the built SPA assets.
-
-Component 'hosting' (AWS S3): stores and serves the built static SPA files (HTML, JS, CSS, assets).
-
-**Related:** ARCH-004
-
-### ARCH-006 · approved · source: architecture:components:backend
-
-_2026-11-06_
-
-Backend Service is named to satisfy the approved stack but is unused in this version.
-
-Component 'backend' (Spring Boot 4.1): carries no note data and exposes no note APIs in this version, because the product owner chose browser-only storage with no server component.
-
-**Related:** ARCH-001
-
-### ARCH-007 · approved · source: architecture:components:database
-
-_2026-11-06_
-
-Central Database is named to satisfy the approved stack but is unused in this version.
-
-Component 'database' (PostgreSQL 16): stores no notes in this version, because notes live only in each visitor's browser by design.
-
-**Related:** ARCH-001
-
-### ARCH-008 · approved · source: architecture:critical_paths:create_autosave
-
-_2026-11-06_
-
-Critical path for creating a note and auto-saving plain text.
+Critical path: creating a note and auto-saving plain text.
 
 Visitor creates a new separate note, edits title and plain-text body; changes are debounced and auto-persisted to local storage with no manual save. Pasted rich formatting is stripped to plain text.
 
-**Related:** ARCH-002, ARCH-003
+**Related:** US-001, US-002, US-003, US-004
 
-### ARCH-009 · approved · source: architecture:critical_paths:browse_search_delete
+### ARCH-003 · approved · source: architecture:critical_path
 
-_2026-11-06_
+Critical path: browsing, opening, searching, and deleting notes across visits.
 
-Critical path for browsing, opening, searching, and deleting notes across visits.
+On load the SPA reads all notes from local storage and renders the list (or empty state). Visitor searches by title/body, opens a note to view/edit, and deletes a note after confirmation. Notes remain present on reopening the app in the same browser.
 
-On load, the SPA reads all notes from local storage and renders the list (or an empty state). Visitor searches by title/body, opens a note to view and edit, and deletes a note after confirmation. Notes remain present on reopening the app in the same browser.
+**Related:** US-005, US-006, US-007, US-008, US-009
 
-**Related:** ARCH-002, ARCH-003
+### ARCH-004 · approved · source: architecture:technology_decisions
 
-### ARCH-010 · approved · source: architecture:entities:note
+Restated approved technology stack and rationale for each choice, including the deliberately unused backend/database.
 
-_2026-11-06_
+- Frontend: Vue 3 (alts: React, Svelte) -- reactivity drives list/editor/auto-save/search; builds to static files for S3/CloudFront.
+- Backend: Spring Boot 4.1 (alts: Node/Express, FastAPI) -- restated to honor approved stack; carries no note data, no note APIs, by deliberate backend-less design.
+- Database: PostgreSQL 16 (alts: MySQL, DynamoDB) -- restated to honor approved stack; holds no data since notes live only in browser local storage.
+- Cloud: AWS (alts: Netlify, Cloudflare Pages) -- S3 + CloudFront deliver the static build fast and cheaply worldwide over HTTPS.
 
-The 'note' entity defines the data shape persisted in local storage.
+### ARCH-005 · approved · source: architecture:entities_and_deployment
 
-Fields: id, title, body, created_at, updated_at. This is the sole persisted entity in the system.
+Data model (note entity) and deployment topology.
 
-**Related:** ARCH-003
+Entity: note (id, title, body, created_at, updated_at), stored only in browser local storage. Deployment nodes: S3 Static Bucket (static object storage), CloudFront Distribution (global edge CDN), Visitor Browser (Vue 3 SPA + local storage, desktop and mobile web browsers).
 
-### ARCH-011 · approved · source: architecture:deployment_nodes
-
-_2026-11-06_
-
-Deployment topology consists of three nodes: S3 bucket, CloudFront distribution, and the visitor's browser.
-
-S3 Static Bucket (AWS S3): static object storage for the built SPA. CloudFront Distribution (AWS CloudFront): global edge CDN delivering the SPA. Visitor Browser (Vue 3 SPA + local storage): runs the app and holds all note data on desktop and mobile web browsers.
-
-**Related:** ARCH-004, ARCH-005, ARCH-002
-
-### ARCH-012 · approved · source: architecture:technology_decisions
-
-_2026-11-06_
-
-Four technology decisions were approved: Vue 3 frontend, Spring Boot backend (unused), PostgreSQL database (unused), and AWS cloud hosting.
-
-Frontend: Vue 3 (alternatives considered: React, Svelte) -- approved stack; reactivity cleanly drives the note list, editor, debounced auto-save, and reactive search filtering, and builds to static files shipped from S3/CloudFront with no backend. Backend: Spring Boot 4.1 (alternatives: Node/Express, FastAPI) -- approved stack, restated to honor it exactly; carries no note data and exposes no note APIs in this version due to the backend-less design. Database: PostgreSQL 16 (alternatives: MySQL, DynamoDB) -- approved stack, restated to honor it exactly; holds no data in this version since notes live only in browser local storage. Cloud: AWS (alternatives: Netlify, Cloudflare Pages) -- approved stack; S3 hosts the static Vue build and CloudFront delivers it fast and reliably to desktop and mobile visitors globally over HTTPS at near-zero cost.
-
-**Related:** ARCH-002, ARCH-006, ARCH-007, ARCH-004, ARCH-005
+**Related:** EPIC-001, EPIC-003
 <!-- sdlc:auto:end narrative -->
 
 <!-- sdlc:auto:start building-blocks -->
