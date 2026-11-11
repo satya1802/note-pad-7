@@ -48,7 +48,13 @@ export const useNotesStore = defineStore("notes", {
       this.loaded = true;
     },
     async persist(): Promise<void> {
-      await storage.setItem(STORAGE_KEY, this.items);
+      // `this.items` is Pinia/Vue reactive state: its entries are Proxy-wrapped objects.
+      // A real browser's IndexedDB uses the structured clone algorithm, which throws
+      // DataCloneError on a Proxy (localforage's localStorage fallback and the fake
+      // IndexedDB used in unit tests are both lenient and hide this). Writing a plain,
+      // JSON-safe copy keeps autosave working against the real browser store.
+      const plain = JSON.parse(JSON.stringify(this.items)) as Note[];
+      await storage.setItem(STORAGE_KEY, plain);
     },
     async createNote(): Promise<Note> {
       const now = new Date().toISOString();

@@ -204,4 +204,65 @@ test.describe("notes", () => {
 
     expect(apiCalls).toEqual([]);
   });
+
+  test("[AC-007] continuing to type after a pause keeps saving automatically, with no manual save action", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: /write the first one/i }).click();
+    await expect(page).toHaveURL(/\/notes\/.+/);
+
+    await expect(page.getByRole("button", { name: /^save$/i })).toHaveCount(0);
+
+    const bodyInput = page.locator("#note-body");
+    await bodyInput.fill("first part");
+    // Pause long enough for the debounced autosave to fire once.
+    await page.waitForTimeout(1200);
+    await expect(page.getByText(/auto-saved/i)).toBeVisible();
+
+    // Continue typing after the pause -- still no save control appears or is needed.
+    await bodyInput.fill("first part, continued after the pause");
+    await page.waitForTimeout(1200);
+    await expect(page.getByText(/auto-saved/i)).toBeVisible();
+    await expect(page.getByRole("button", { name: /^save$/i })).toHaveCount(0);
+
+    await page.reload();
+    await expect(page.locator("#note-body")).toHaveValue("first part, continued after the pause");
+  });
+
+  test("[AC-008] closing a note by returning to the list and reopening it shows the latest auto-saved changes", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: /write the first one/i }).click();
+    await expect(page).toHaveURL(/\/notes\/.+/);
+
+    await page.locator("#note-title").fill("Reopen me");
+    await page.locator("#note-body").fill("content set before closing the note");
+    await page.waitForTimeout(1200);
+
+    // Close the note by navigating back to the list -- no save step is taken.
+    await page.getByRole("button", { name: /all notes/i }).click();
+    await expect(page).toHaveURL(/\/notes$/);
+
+    // Reopen the same note from the list.
+    await page.getByRole("button", { name: /reopen me/i }).click();
+    await expect(page).toHaveURL(/\/notes\/.+/);
+    await expect(page.locator("#note-title")).toHaveValue("Reopen me");
+    await expect(page.locator("#note-body")).toHaveValue("content set before closing the note");
+  });
+
+  test("[AC-009] the editor has no manual save control and shows that saving is automatic", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: /write the first one/i }).click();
+    await expect(page).toHaveURL(/\/notes\/.+/);
+
+    await expect(page.getByRole("button", { name: /^save$/i })).toHaveCount(0);
+    await expect(page.getByText(/no save button/i)).toBeVisible();
+    await expect(page.getByText(/auto-saved/i)).toBeVisible();
+
+    await page.locator("#note-body").fill("typed without ever saving manually");
+    await page.waitForTimeout(1200);
+    await expect(page.getByText(/auto-saved/i)).toBeVisible();
+    await expect(page.getByRole("button", { name: /^save$/i })).toHaveCount(0);
+  });
 });
