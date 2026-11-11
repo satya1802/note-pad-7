@@ -7,7 +7,8 @@ import NoteDetail from "@/screens/NoteDetail.vue";
 // Screens marked bare (shown before sign-in, or hidden from the menu) render on their own.
 export const routes: RouteRecordRaw[] = [
   { path: "/notes", component: Notes },
-  { path: "/note-detail", component: NoteDetail },
+  { path: "/notes/:id", component: NoteDetail },
+  { path: "/note-detail", redirect: "/notes" },
   { path: "/:pathMatch(.*)*", redirect: "/notes" },
 ];
 </script>
@@ -41,9 +42,6 @@ function linkClass(path: string): string {
       <nav aria-label="App menu" class="flex flex-col gap-1">
         <RouterLink to="/notes" :class="linkClass('/notes')">
           {{ "Notes" }}
-        </RouterLink>
-        <RouterLink to="/note-detail" :class="linkClass('/note-detail')">
-          {{ "Note" }}
         </RouterLink>
       </nav>
     </aside>
