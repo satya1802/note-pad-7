@@ -3,7 +3,7 @@
 > Maintained by QuorQ AI SDLC. Text between `sdlc:auto` markers is regenerated; anything outside them is yours and is kept.
 
 <!-- sdlc:auto:start summary -->
-59 tests · Passed 28 · Failed 0 · Skipped 0 · Not run 31
+68 tests · Passed 33 · Failed 0 · Skipped 0 · Not run 35
 
 Acceptance criteria covered: 27/27 · passing: 2/27
 <!-- sdlc:auto:end summary -->
@@ -22,11 +22,13 @@ Acceptance criteria covered: 27/27 · passing: 2/27
 | AC-011 | Notes > [AC-011] shows an empty state with no notes and an action to create one | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
 | AC-014 | Notes > [AC-014] a search term filters the list to notes whose body matches, even when the title does not | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
 | AC-014 | Notes > [AC-014] a search term filters the list to notes whose title matches | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
+| AC-014 | Notes > [AC-014] search matching is case-insensitive regardless of how the term or note was cased | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
 | AC-015 | Notes > [AC-015] a search term matching no notes shows an empty/no-results state, not the full list | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
 | AC-016 | Notes > [AC-016] clearing an active search term shows the full list of all notes again | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
 | AC-001 | notes store > [AC-001] createNote starts with an empty title and body | Unit | Passed | `frontend/src/stores/notes.test.ts` |
 | AC-002 | notes store > [AC-002] createNote adds a distinct record each time, none overwritten | Unit | Passed | `frontend/src/stores/notes.test.ts` |
 | AC-019 | notes store > [AC-019] a fresh store instance loads notes persisted earlier | Unit | Passed | `frontend/src/stores/notes.test.ts` |
+| AC-021, AC-022 | notes store > [AC-021][AC-022][NFR-001] load, createNote, updateNote and deleteNote never call fetch, so notes never leave this browser and there is nothing a server could hold or sync back once local storage is cleared | Unit | Passed | `frontend/src/stores/notes.test.ts` |
 | — | notes store > deleteNote removes only the targeted note | Unit | Passed | `frontend/src/stores/notes.test.ts` |
 | — | notes store > notes getter sorts by updated_at desc | Unit | Passed | `frontend/src/stores/notes.test.ts` |
 | — | notes store > updateNote changes only the targeted note | Unit | Passed | `frontend/src/stores/notes.test.ts` |
@@ -61,10 +63,19 @@ Acceptance criteria covered: 27/27 · passing: 2/27
 
 ## Sprint 2
 
+### US-006: Open a note to view and edit
+
+| Criteria | Test | Level | Result | File |
+|---|---|---|---|---|
+| AC-012 | navigating from the notes list into the editor > [AC-012] selecting a note from the real list opens the real editor with its title and full body | Unit | Passed | `frontend/src/screens/NoteNavigation.test.ts` |
+| AC-013 | navigating from the notes list into the editor > [AC-013] returning to the list and opening a different note shows that note's own content, not the previous one's | Unit | Passed | `frontend/src/screens/NoteNavigation.test.ts` |
+| AC-014 | navigating from the notes list into the editor > [AC-014] opening a note from a filtered search list opens that note, not another one sharing the term | Unit | Passed | `frontend/src/screens/NoteNavigation.test.ts` |
+
 ### US-007: Search across notes
 
 | Criteria | Test | Level | Result | File |
 |---|---|---|---|---|
+| AC-014 | [AC-014] clicking a note from a filtered search list opens that exact note in the editor | E2E | Not run yet | `frontend/e2e/search.spec.ts` |
 | AC-014 | [AC-014] entering a search term filters the list to notes whose title or body matches it | E2E | Not run yet | `frontend/e2e/search.spec.ts` |
 | AC-015 | [AC-015] a search term matching no notes shows an empty/no-results state | E2E | Not run yet | `frontend/e2e/search.spec.ts` |
 | AC-016 | [AC-016] clearing the search term shows the full list of all notes again | E2E | Not run yet | `frontend/e2e/search.spec.ts` |
@@ -81,10 +92,13 @@ Acceptance criteria covered: 27/27 · passing: 2/27
 
 | Criteria | Test | Level | Result | File |
 |---|---|---|---|---|
+| AC-025 | [AC-025] create, search and delete all remain usable at 1280x800, not just the editor | E2E | Not run yet | `frontend/e2e/responsive.spec.ts` |
 | AC-025 | [AC-025] the editor is usable with no horizontal overflow at 1280x800 | E2E | Not run yet | `frontend/e2e/responsive.spec.ts` |
 | AC-025 | [AC-025] the list renders in more than one column at 1280x800 | E2E | Not run yet | `frontend/e2e/responsive.spec.ts` |
 | AC-026 | [AC-026] create, edit, search and delete each complete end to end at 390x844 with no horizontal scrolling | E2E | Not run yet | `frontend/e2e/responsive.spec.ts` |
 | AC-026 | [AC-026] the delete confirmation dialog and both of its buttons are visible within the viewport at 390x844 | E2E | Not run yet | `frontend/e2e/responsive.spec.ts` |
+| AC-026 | [AC-026] the note list collapses to a single column at 390x844, proving the layout actually adapts (not just avoids overflow) | E2E | Not run yet | `frontend/e2e/responsive.spec.ts` |
+| AC-026 | [AC-026] the primary create action and the editor's delete action meet a touch-friendly minimum size on mobile | E2E | Not run yet | `frontend/e2e/responsive.spec.ts` |
 
 ## Project setup
 

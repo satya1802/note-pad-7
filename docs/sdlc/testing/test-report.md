@@ -22,6 +22,16 @@ _No E2E run yet._
 | Step | Status | Ticket | Finished |
 |---|---|---|---|
 | run_checks | succeeded | — | 2026-11-11 |
+| write_tests | succeeded | US-006 | 2026-11-11 |
+| write_tests | succeeded | US-007 | 2026-11-11 |
+| write_tests | succeeded | US-012 | 2026-11-11 |
+| write_tests | succeeded | US-010 | 2026-11-11 |
+
+### Sprint 2
+
+| Step | Status | Ticket | Finished |
+|---|---|---|---|
+| run_checks | succeeded | — | 2026-11-11 |
 | write_tests | succeeded | US-004 | 2026-11-11 |
 | write_tests | succeeded | US-007 | 2026-11-11 |
 | write_tests | succeeded | US-010 | 2026-11-11 |
