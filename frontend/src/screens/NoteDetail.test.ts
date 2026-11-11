@@ -201,9 +201,7 @@ describe("NoteDetail", () => {
     const reopenedPinia = freshPinia();
     const { wrapper: reopened } = await mountEditor(reopenedPinia, note.id);
 
-    expect((reopened.get("#note-title").element as HTMLInputElement).value).toBe(
-      "Reopen target",
-    );
+    expect((reopened.get("#note-title").element as HTMLInputElement).value).toBe("Reopen target");
     expect((reopened.get("#note-body").element as HTMLTextAreaElement).value).toBe(
       "saved before the note was closed",
     );
