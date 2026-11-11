@@ -7,80 +7,87 @@ _Up to date._
 <!-- sdlc:auto:end status -->
 
 <!-- sdlc:auto:start source -->
-Generated from commit `a117cfc` · model `claude-sonnet-5`
+Generated from commit `e6823ee` · model `claude-sonnet-5`
 <!-- sdlc:auto:end source -->
 
 <!-- sdlc:auto:start overview -->
-Note Pad 7 is a generated two-app repository from the Quorq AI SDLC platform: a Vite + Vue 3 frontend containing the approved, reviewed screens (currently rendering seeded sample data, not live API calls) and a Spring Boot 4.1 (Java 21, Maven) backend that currently exposes only a health check, since no backend architecture had been approved yet. The frontend and backend are independent apps in one repo, wired together through a small API client seam (`frontend/src/lib/api.ts`) that is ready for screens to be connected to real endpoints one at a time.
+note pad 7 is a generated two-app repository: a Vue 3 + Vite frontend containing approved, already-reviewed note-taking screens that currently run entirely on seeded local sample data (persisted via localforage/Pinia), and a Spring Boot 4.1 (Java 21, Maven) backend that only exposes a health check plus a Note JPA entity/repository scaffold -- no note routes are wired up yet. The backend uses PostgreSQL 16 in production (via docker-compose) and falls back to an in-memory H2 database when no DATABASE_URL is set.
 <!-- sdlc:auto:end overview -->
 
 <!-- sdlc:auto:start prerequisites -->
-- Node.js (for npm, Vite, Vue 3, Vitest, Playwright)
-- Java 21 (backend uses the Maven wrapper, no local Maven install required)
-- Docker and Docker Compose (to run the PostgreSQL 16 database via docker-compose.yml)
+- Node.js (for the frontend, Vite 6 / vue-tsc toolchain)
+- npm
+- Java 21
+- Maven (via the bundled mvnw wrapper, no separate install needed)
+- Docker and Docker Compose (to run the PostgreSQL 16 service in docker-compose.yml)
 <!-- sdlc:auto:end prerequisites -->
 
 <!-- sdlc:auto:start setup -->
-1. Clone the repository
-2. cd frontend && npm install
-3. (optional) docker compose up -d db — starts a PostgreSQL 16 container on port 5432 for the backend
-4. cd backend — no install step needed; sh mvnw will fetch dependencies on first run
+1. cd frontend && npm install
+2. (optional) cp ../.env.example ../.env and fill in any values it defines
+3. (optional, for a real Postgres instead of H2) from the repo root: docker-compose up -d db
+4. cd backend; the mvnw wrapper downloads Maven and dependencies on first use, no separate install step is required
 <!-- sdlc:auto:end setup -->
 
 <!-- sdlc:auto:start run -->
 | Name | Command | Description |
 |---|---|---|
-| frontend dev | `cd frontend && npm run dev` | Starts the Vite dev server for the Vue 3 app |
-| frontend build | `cd frontend && npm run build` | Bundles the app for production (does not typecheck) |
-| frontend preview | `cd frontend && npm run preview` | Serves the production build locally |
-| backend run | `cd backend && sh mvnw spring-boot:run` | Starts the Spring Boot API; defaults to port 8000 and falls back to an in-memory H2 database if DATABASE_URL is not set |
-| db up | `docker compose up -d db` | Starts the PostgreSQL 16 database defined in docker-compose.yml |
+| frontend dev | `npm run dev` | Starts the Vite dev server for the Vue 3 frontend |
+| frontend build | `npm run build` | Bundles the frontend for production (does not typecheck) |
+| frontend preview | `npm run preview` | Serves the production build locally |
+| backend run | `sh mvnw spring-boot:run` | Runs the Spring Boot API (from backend/); listens on PORT (default 8000) |
+| db | `docker-compose up -d db` | Starts a local PostgreSQL 16 instance on port 5432 for the backend |
 <!-- sdlc:auto:end run -->
 
 <!-- sdlc:auto:start structure -->
 | Path | Purpose |
 |---|---|
-| `.devcontainer` | Dev container configuration for a consistent development environment |
-| `.quorq` | Platform metadata (handoff.json) used by the Quorq AI SDLC tooling |
-| `backend` | Spring Boot (Java 21, Maven) API service; currently only has a health check and stubs |
-| `backend/src` | Java source (main app code and tests) |
+| `.devcontainer` | VS Code devcontainer configuration |
+| `.quorq` | Platform metadata (handoff.json, prepared.json) used by the Quorq AI SDLC platform |
+| `frontend` | Vue 3 + Vite single-page app with the approved, generated note-taking screens |
+| `frontend/src` | App source: entry point, App.vue shell/routes, screens, lib, stores |
+| `frontend/src/screens` | One single-file component per approved screen (Notes, NoteDetail) |
+| `frontend/src/lib` | Shared utilities: api.ts (backend client), ui.ts, icons.ts, brand.ts, navigate.ts |
+| `frontend/src/stores` | Pinia store(s) for notes state, e.g. notes.ts |
+| `frontend/e2e` | Playwright acceptance tests |
+| `backend` | Spring Boot (Java 21, Maven) API service |
+| `backend/src/main/java/app` | Application entry point, HealthController, Stubs.java, WebConfig, DatabaseUrlEnvironmentPostProcessor |
+| `backend/src/main/java/app/model` | JPA entity (Note) and Spring Data repository (NoteRepository) |
+| `backend/src/main/resources` | application.properties and spring.factories configuration |
+| `backend/src/test` | Backend unit/integration tests |
 | `backend/docker` | HealthCheck.java used by the Docker image's HEALTHCHECK |
-| `backend/.mvn` | Maven wrapper configuration |
-| `frontend` | Vite + Vue 3 single-page app with the approved, reviewed screens, running on seeded sample data |
-| `frontend/src` | App source: entry point, lib (api client, ui/icons helpers), styles |
-| `frontend/e2e` | Playwright end-to-end acceptance tests |
-| `docker-compose.yml` | Defines the local PostgreSQL 16 database service |
-| `.env.example` | Example environment variables for local setup |
 <!-- sdlc:auto:end structure -->
 
 <!-- sdlc:auto:start conventions -->
-- Frontend screens are plain single-file Vue components built against a shared component/icon vocabulary in src/lib/ui.ts and src/lib/icons.ts
-- API access is centralized through apiFetch in src/lib/api.ts, which attaches a bearer token (session token if set, else the shared secret) and prefixes requests with API_BASE_URL
-- Frontend screens currently render seeded sample data rather than calling the backend; api.ts is the designated seam for wiring real calls
-- Backend follows standard Spring Boot layout under app package; HealthController is the only real handler, with Stubs.java as a placeholder
-- Backend database schema updates automatically via Hibernate ddl-auto=update (no migrations yet); falls back to H2 in-memory DB with no DATABASE_URL
-- Java code is formatted/checked with Spotless (Google Java Format) and Checkstyle (checkstyle.xml)
-- Frontend code is linted with ESLint and formatted with Prettier (.prettierrc)
-- Backend listens on HOST/PORT env vars (default 0.0.0.0:8000); the Docker image runs as a non-root user
+- Frontend screens are one single-file component per approved design, kept under src/screens
+- Component tests live beside the component/store they cover (e.g. Notes.test.ts next to Notes.vue, notes.test.ts next to notes.ts)
+- Playwright e2e specs live in frontend/e2e, separate from Vitest's src/**/*.test.ts scope
+- Frontend API base URL and shared secret are read from VITE_API_BASE_URL / VITE_API_SECRET_KEY at build time, with localhost:8000 as the dev fallback (src/lib/api.ts)
+- Backend uses Spring Data JPA with hibernate.ddl-auto=update and globally quoted identifiers; no migration tool configured
+- Backend Java formatting/linting enforced via Spotless (google-java-format) and Checkstyle (backend/checkstyle.xml)
+- Backend falls back to an in-memory H2 database when DATABASE_URL is not set
 <!-- sdlc:auto:end conventions -->
 
 <!-- sdlc:auto:start testing -->
 | Name | Command | Description |
 |---|---|---|
-| frontend unit tests | `cd frontend && npm test` | Runs Vitest component tests (Vue Test Utils) colocated with components |
-| frontend e2e tests | `cd frontend && npm run test:e2e` | Runs Playwright acceptance tests from e2e/; builds/serves the frontend and boots the backend locally unless E2E_BASE_URL is set |
-| e2e browser install | `cd frontend && npm run test:e2e:install` | Installs the Chromium browser Playwright needs |
-| frontend lint | `cd frontend && npm run lint` | Runs ESLint over the frontend app (the platform's development gate) |
-| frontend typecheck | `cd frontend && npm run typecheck` | Runs vue-tsc --noEmit over the TypeScript around the generated screens |
-| backend tests | `cd backend && sh mvnw test` | Runs the Spring Boot test suite (JUnit, including *IT integration tests) with JaCoCo coverage |
-| backend style checks | `cd backend && sh mvnw checkstyle:check spotless:check` | Verifies Java code style and formatting |
+| frontend unit tests | `npm test` | Runs Vitest component/unit tests (vitest run --passWithNoTests) |
+| frontend lint | `npm run lint` | Runs ESLint over the frontend app |
+| frontend typecheck | `npm run typecheck` | Runs vue-tsc --noEmit over the TypeScript code |
+| frontend format check | `npm run format:check` | Checks formatting with Prettier |
+| frontend e2e install | `npm run test:e2e:install` | Installs the Chromium browser Playwright needs |
+| frontend e2e | `npm run test:e2e` | Runs Playwright acceptance tests in e2e/; builds/boots the backend and frontend locally unless E2E_BASE_URL is set |
+| backend test | `sh mvnw test` | Runs backend unit and integration tests with JaCoCo coverage |
+| backend checks | `sh mvnw checkstyle:check spotless:check` | Verifies Checkstyle and Spotless formatting rules |
+| backend format | `sh mvnw spotless:apply` | Auto-formats backend Java code with Spotless |
 <!-- sdlc:auto:end testing -->
 
 <!-- sdlc:auto:start troubleshooting -->
 | Problem | Solution |
 |---|---|
-| Backend fails to start or create tables against PostgreSQL | Run `docker compose up -d db` first to start the PostgreSQL 16 container, or omit DATABASE_URL to let the app fall back to an in-memory H2 database |
-| `npm run typecheck` fails even though `npm run build` succeeded | Expected: build only bundles and does not typecheck; run `npm run typecheck` (vue-tsc --noEmit) separately to catch TypeScript issues |
-| Playwright e2e tests fail to start the backend | The e2e config builds and runs the backend jar itself (`mvn package` then `java -jar target/app.jar` on port 8000); ensure Java 21 is installed, or set E2E_BASE_URL to point at an already-running deployment instead |
-| Frontend screens show sample data instead of real content | This is expected — screens run on seeded sample data by design; connect a screen to the backend via the apiFetch helper in src/lib/api.ts |
+| Backend won't start or fails to connect to a database | Without a DATABASE_URL set, the backend automatically falls back to an in-memory H2 database, so it can run with no database server; set DATABASE_URL or run docker-compose up -d db for real PostgreSQL 16 |
+| npm run build succeeds but hides type errors | The build step does not typecheck; run npm run typecheck separately to catch TypeScript issues in frontend/src |
+| npm run test:e2e fails immediately with no browser found | Run npm run test:e2e:install first to fetch the Chromium browser Playwright needs |
+| Frontend screens don't reflect real backend data | The generated screens currently render seeded sample data only; src/lib/api.ts is the prepared seam for wiring a screen to the real backend, which hasn't been done yet |
+| Backend Docker image health checks fail with curl/wget errors | The image intentionally has no curl, wget, or Python; it uses the included aisdlc-health script (backed by docker/HealthCheck.java) instead |
 <!-- sdlc:auto:end troubleshooting -->
