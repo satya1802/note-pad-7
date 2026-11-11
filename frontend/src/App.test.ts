@@ -1,4 +1,5 @@
 import { flushPromises, mount } from "@vue/test-utils";
+import { createPinia } from "pinia";
 import { createMemoryHistory, createRouter } from "vue-router";
 import { describe, expect, it } from "vitest";
 
@@ -9,7 +10,7 @@ describe("App", () => {
     const router = createRouter({ history: createMemoryHistory(), routes });
     await router.push("/notes");
     await router.isReady();
-    const wrapper = mount(App, { global: { plugins: [router] } });
+    const wrapper = mount(App, { global: { plugins: [router, createPinia()] } });
     await flushPromises();
     expect(wrapper.text()).toContain("Notes");
   });

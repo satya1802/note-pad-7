@@ -42,12 +42,16 @@ public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProce
     URI uri = URI.create(url.strip());
     String scheme = uri.getScheme().split("\\+", 2)[0];
     String engine = scheme.startsWith("postgres") ? "postgresql" : scheme;
+    // This project's only declared database is PostgreSQL (see ENVIRONMENT.md) and its
+    // driver is the only one on the classpath; an unrecognised scheme (a local default
+    // meant for some other stack, never what the platform itself writes) falls back to
+    // the in-memory database rather than crashing the app on a driver it does not have.
+    if (!engine.equals("postgresql")) {
+      properties.put("spring.datasource.url", IN_MEMORY);
+      return properties;
+    }
     String port = uri.getPort() == -1 ? "" : ":" + uri.getPort();
     String query = uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery();
-    if (engine.equals("mysql") && query.isEmpty()) {
-      // MySQL 8 signs in without TLS only when the client may fetch the server's key.
-      query = "?allowPublicKeyRetrieval=true&useSSL=false";
-    }
     properties.put(
         "spring.datasource.url",
         "jdbc:" + engine + "://" + uri.getHost() + port + uri.getRawPath() + query);
