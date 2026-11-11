@@ -118,6 +118,28 @@ describe("Notes", () => {
     expect(wrapper.text()).not.toContain("Groceries");
   });
 
+  it("[AC-014] search matching is case-insensitive regardless of how the term or note was cased", async () => {
+    const seed = useNotesStore();
+    await seed.load();
+    const groceries = await seed.createNote();
+    await seed.updateNote(groceries.id, { title: "Groceries", body: "Milk, Eggs, Bread" });
+    const workout = await seed.createNote();
+    await seed.updateNote(workout.id, { title: "Workout plan", body: "squats, lunges" });
+
+    const { wrapper } = await setup();
+    const search = wrapper.get("#note-search");
+
+    await search.setValue("GROCER");
+    await flushPromises();
+    expect(wrapper.text()).toContain("Groceries");
+    expect(wrapper.text()).not.toContain("Workout plan");
+
+    await search.setValue("eggs");
+    await flushPromises();
+    expect(wrapper.text()).toContain("Groceries");
+    expect(wrapper.text()).not.toContain("Workout plan");
+  });
+
   it("[AC-015] a search term matching no notes shows an empty/no-results state, not the full list", async () => {
     const seed = useNotesStore();
     await seed.load();

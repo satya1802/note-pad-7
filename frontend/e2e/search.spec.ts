@@ -72,6 +72,27 @@ test.describe("search", () => {
     await expect(page.getByText(/nothing by that name/i)).toBeVisible();
   });
 
+  test("[AC-014] clicking a note from a filtered search list opens that exact note in the editor", async ({
+    page,
+  }) => {
+    await createNote(page, "Groceries", "milk, eggs, bread");
+    await createNote(page, "Reading list", "a book that mentions groceries in passing");
+    await createNote(page, "Workout plan", "squats, lunges, push-ups");
+
+    const search = page.locator("#note-search");
+    await search.fill("grocer");
+    await expect(page.getByText("Workout plan", { exact: false })).toHaveCount(0);
+
+    // Open the body-match result (not the title-match one) and confirm the editor shows
+    // that result's own content, proving the filtered list still routes to the right note.
+    await page.getByRole("button", { name: "Reading list", exact: true }).click();
+    await expect(page).toHaveURL(/\/notes\/.+/);
+    await expect(page.locator("#note-title")).toHaveValue("Reading list");
+    await expect(page.locator("#note-body")).toHaveValue(
+      "a book that mentions groceries in passing",
+    );
+  });
+
   test("[AC-016] clearing the search term shows the full list of all notes again", async ({
     page,
   }) => {

@@ -1,5 +1,5 @@
 import { createPinia, setActivePinia } from "pinia";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useNotesStore } from "./notes";
 
@@ -76,4 +76,32 @@ describe("notes store", () => {
     expect(store.notes[0].id).toBe(b.id);
     expect(store.notes[1].id).toBe(a.id);
   });
+
+  it(
+    "[AC-021][AC-022][NFR-001] load, createNote, updateNote and deleteNote never call " +
+      "fetch, so notes never leave this browser and there is nothing a server could hold " +
+      "or sync back once local storage is cleared",
+    async () => {
+      // A spy that fails the assertion below the moment anything in the notes lifecycle
+      // tries to reach a network -- the direct, fast counterpart to the e2e specs that
+      // capture real browser requests for the same guarantee (privacy.spec.ts, NFR-001).
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+
+      const store = useNotesStore();
+      await store.load();
+      const note = await store.createNote();
+      await store.updateNote(note.id, { title: "Local only", body: "never transmitted" });
+      await store.deleteNote(note.id);
+
+      // A second, fresh store instance re-reading persisted state (the unit-level stand-in
+      // for "a different browser session opening the app") must also do it with no network
+      // call -- the whole point of AC-021/AC-022 is that persistence is local-only.
+      setActivePinia(createPinia());
+      const reloaded = useNotesStore();
+      await reloaded.load();
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+      fetchSpy.mockRestore();
+    },
+  );
 });
