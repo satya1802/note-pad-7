@@ -262,7 +262,11 @@ onUnmounted(() => {
           </h1>
           <p
             class="mt-3 text-[12px] tracking-[0.1em]"
-            :style="{ color: brand.primaryColor, opacity: 0.68, fontVariantNumeric: 'tabular-nums' }"
+            :style="{
+              color: brand.primaryColor,
+              opacity: 0.68,
+              fontVariantNumeric: 'tabular-nums',
+            }"
           >
             Created {{ fmtDate(createdAt) }} &nbsp;·&nbsp; Last edited {{ fmtDate(updatedAt) }}
           </p>
@@ -358,11 +362,7 @@ onUnmounted(() => {
                   :style="{ color: brand.neutralColor, fontVariantNumeric: 'tabular-nums' }"
                   aria-live="polite"
                 >
-                  <IconCheckCircle
-                    v-if="status === 'saved'"
-                    class="h-4 w-4"
-                    aria-hidden="true"
-                  />
+                  <IconCheckCircle v-if="status === 'saved'" class="h-4 w-4" aria-hidden="true" />
                   <IconClock
                     v-else
                     class="h-4 w-4 animate-pulse motion-reduce:animate-none"
