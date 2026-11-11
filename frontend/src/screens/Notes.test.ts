@@ -85,4 +85,71 @@ describe("Notes", () => {
     expect(store.getNote(first.id)?.title).toBe("First note");
     expect(store.getNote(first.id)?.body).toBe("keep me");
   });
+
+  it("[AC-014] a search term filters the list to notes whose title matches", async () => {
+    const seed = useNotesStore();
+    await seed.load();
+    const groceries = await seed.createNote();
+    await seed.updateNote(groceries.id, { title: "Groceries", body: "milk, eggs" });
+    const workout = await seed.createNote();
+    await seed.updateNote(workout.id, { title: "Workout plan", body: "squats, lunges" });
+
+    const { wrapper } = await setup();
+    await wrapper.get("#note-search").setValue("grocer");
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("Groceries");
+    expect(wrapper.text()).not.toContain("Workout plan");
+  });
+
+  it("[AC-014] a search term filters the list to notes whose body matches, even when the title does not", async () => {
+    const seed = useNotesStore();
+    await seed.load();
+    const groceries = await seed.createNote();
+    await seed.updateNote(groceries.id, { title: "Groceries", body: "milk, eggs, bread" });
+    const workout = await seed.createNote();
+    await seed.updateNote(workout.id, { title: "Workout plan", body: "squats, lunges" });
+
+    const { wrapper } = await setup();
+    await wrapper.get("#note-search").setValue("lunges");
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("Workout plan");
+    expect(wrapper.text()).not.toContain("Groceries");
+  });
+
+  it("[AC-015] a search term matching no notes shows an empty/no-results state, not the full list", async () => {
+    const seed = useNotesStore();
+    await seed.load();
+    const groceries = await seed.createNote();
+    await seed.updateNote(groceries.id, { title: "Groceries", body: "milk, eggs" });
+
+    const { wrapper } = await setup();
+    await wrapper.get("#note-search").setValue("zzz-no-such-term");
+    await flushPromises();
+
+    expect(wrapper.text()).not.toContain("Groceries");
+    expect(wrapper.text().toLowerCase()).toMatch(/nothing by that name|no note/);
+  });
+
+  it("[AC-016] clearing an active search term shows the full list of all notes again", async () => {
+    const seed = useNotesStore();
+    await seed.load();
+    const groceries = await seed.createNote();
+    await seed.updateNote(groceries.id, { title: "Groceries", body: "milk, eggs" });
+    const workout = await seed.createNote();
+    await seed.updateNote(workout.id, { title: "Workout plan", body: "squats, lunges" });
+
+    const { wrapper } = await setup();
+    const search = wrapper.get("#note-search");
+    await search.setValue("grocer");
+    await flushPromises();
+    expect(wrapper.text()).not.toContain("Workout plan");
+
+    await search.setValue("");
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("Groceries");
+    expect(wrapper.text()).toContain("Workout plan");
+  });
 });

@@ -158,4 +158,65 @@ describe("NoteDetail", () => {
     const forbidden = /log\s*in|sign\s*in|sign\s*up|register|subscribe|upgrade|payment|billing/i;
     expect(wrapper.text()).not.toMatch(forbidden);
   });
+
+  it("[AC-007] pausing then continuing to type keeps saving automatically with no manual save action", async () => {
+    const pinia = freshPinia();
+    const store = useNotesStore();
+    await store.load();
+    const note: Note = await store.createNote();
+    const { wrapper } = await mountEditor(pinia, note.id);
+
+    // There is no save control to click -- the only way these changes reach the store
+    // is the debounced autosave itself.
+    const saveButtons = wrapper.findAll("button").filter((b) => /^save$/i.test(b.text().trim()));
+    expect(saveButtons).toHaveLength(0);
+
+    const bodyInput = wrapper.get("#note-body");
+    await bodyInput.setValue("typed, then paused");
+    await settleAutosave(wrapper);
+    expect(store.getNote(note.id)?.body).toBe("typed, then paused");
+
+    // Continue typing after the pause; the only persisted value should be the latest one.
+    await bodyInput.setValue("typed, then paused, then continued without any save click");
+    await settleAutosave(wrapper);
+    expect(store.getNote(note.id)?.body).toBe(
+      "typed, then paused, then continued without any save click",
+    );
+  });
+
+  it("[AC-008] reopening the note after it was closed shows the most recently auto-saved changes", async () => {
+    const pinia = freshPinia();
+    const store = useNotesStore();
+    await store.load();
+    const note: Note = await store.createNote();
+    const { wrapper } = await mountEditor(pinia, note.id);
+
+    await wrapper.get("#note-title").setValue("Reopen target");
+    await wrapper.get("#note-body").setValue("saved before the note was closed");
+    await settleAutosave(wrapper);
+    wrapper.unmount();
+
+    // Simulate closing and reopening the note: a brand-new component instance, backed by
+    // its own fresh Pinia store, reads back whatever autosave already persisted.
+    const reopenedPinia = freshPinia();
+    const { wrapper: reopened } = await mountEditor(reopenedPinia, note.id);
+
+    expect((reopened.get("#note-title").element as HTMLInputElement).value).toBe("Reopen target");
+    expect((reopened.get("#note-body").element as HTMLTextAreaElement).value).toBe(
+      "saved before the note was closed",
+    );
+  });
+
+  it("[AC-009] the editor shows no manual save button and states that saving is automatic", async () => {
+    const pinia = freshPinia();
+    const store = useNotesStore();
+    await store.load();
+    const note: Note = await store.createNote();
+    const { wrapper } = await mountEditor(pinia, note.id);
+
+    const saveButtons = wrapper.findAll("button").filter((b) => /^save$/i.test(b.text().trim()));
+    expect(saveButtons).toHaveLength(0);
+    expect(wrapper.text().toLowerCase()).toContain("no save button");
+    expect(wrapper.text().toLowerCase()).toContain("auto-saved");
+  });
 });
