@@ -27,10 +27,7 @@ async function mountApp(pinia: ReturnType<typeof createPinia>) {
   });
   await router.push("/notes");
   await router.isReady();
-  const wrapper = mount(
-    { template: "<router-view />" },
-    { global: { plugins: [router, pinia] } },
-  );
+  const wrapper = mount({ template: "<router-view />" }, { global: { plugins: [router, pinia] } });
   await flushPromises();
   return { wrapper, router };
 }
@@ -125,6 +122,45 @@ describe("navigating from the notes list into the editor", () => {
     expect((wrapper.get("#note-title").element as HTMLInputElement).value).toBe("First note");
     expect((wrapper.get("#note-body").element as HTMLTextAreaElement).value).toBe(
       "content of the first note",
+    );
+  });
+
+  it("[AC-014] opening a note from a filtered search list opens that note, not another one sharing the term", async () => {
+    const pinia = freshPinia();
+    const seed = useNotesStore();
+    await seed.load();
+    const groceries = await seed.createNote();
+    await seed.updateNote(groceries.id, {
+      title: "Groceries",
+      body: "milk, eggs, bread -- buy before the weekend",
+    });
+    const reading = await seed.createNote();
+    await seed.updateNote(reading.id, {
+      title: "Reading list",
+      body: "a book that mentions groceries in passing",
+    });
+    const workout = await seed.createNote();
+    await seed.updateNote(workout.id, { title: "Workout plan", body: "squats, lunges" });
+
+    const { wrapper, router } = await mountApp(pinia);
+
+    await wrapper.get("#note-search").setValue("grocer");
+    await flushPromises();
+
+    // Both notes mentioning "grocer" remain, the unrelated one is filtered out.
+    expect(wrapper.text()).toContain("Groceries");
+    expect(wrapper.text()).toContain("Reading list");
+    expect(wrapper.text()).not.toContain("Workout plan");
+
+    // Selecting the body-match result opens that exact note, not the title-match one,
+    // proving the filtered list wires each result button to its own note's id.
+    await findNoteButton(wrapper, "Reading list").trigger("click");
+    await flushPromises();
+
+    expect(router.currentRoute.value.path).toBe(`/notes/${reading.id}`);
+    expect((wrapper.get("#note-title").element as HTMLInputElement).value).toBe("Reading list");
+    expect((wrapper.get("#note-body").element as HTMLTextAreaElement).value).toBe(
+      "a book that mentions groceries in passing",
     );
   });
 });
